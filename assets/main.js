@@ -208,14 +208,14 @@ function createGraph (data) {
     });
 }
 
-fetch('https://canvasjs.com/services/data/datapoints.php')
+/*fetch('https://canvasjs.com/services/data/datapoints.php')
     .then(response => response.json())
     .then(data => {
         createGraph(data);
     })
     .catch(error => {
         console.error('Erreur lors de la récupération des données :', error);
-});
+});*/
 
 function updateGraph(thirdChart, newData) {
     thirdChart.data.labels = newData.map(point => point[0]);
@@ -225,9 +225,10 @@ function updateGraph(thirdChart, newData) {
 }
 
 setInterval(() => {
-    fetch('https://canvasjs.com/services/data/datapoints.php?xstart=' + (dataPoints.length + 1) + "&ystart=" + (dataPoints[dataPoints.length - 1].y) + "&length=1&type=json")
+    fetch('https://canvasjs.com/services/data/datapoints.php?xstart=' + (thirdChart.length + 1) + "&ystart=" + (thirdChart[thirdChart.length - 1].y) + "&length=1&type=json")
     .then(response => response.json())
     .then(data => {
+        console.log(data);
         updateGraph(thirdChart, data);
     })
     .catch(error => {
