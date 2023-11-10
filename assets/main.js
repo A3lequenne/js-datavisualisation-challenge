@@ -270,4 +270,4 @@ function fetchData() {
     setTimeout(fetchData, 1000);
 }
 
-fetchData(); 
+fetchData();
