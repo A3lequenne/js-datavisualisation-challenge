@@ -173,7 +173,9 @@ thirdCanvas.width = 10;
 divThirdChart.appendChild(thirdCanvas);
 const ctxThird = thirdCanvas.getContext("2d");
 
-function createGraph (data) {
+var dataPoints = [];
+
+/*function createGraph (data) {
     thirdChart = new Chart(ctxThird, {
         type: 'line',
         data: {
@@ -190,13 +192,13 @@ function createGraph (data) {
             //maintainAspectRatio: false,
             scales: {
                 x: {
-                    /*type: 'time',
+                    type: 'time',
                     time: {
                         parser: 'YYYY-MM-DD HH:mm:ss',
                         displayFormats: {
                         second: 'h:mm:ss a',
                         },
-                    },*/
+                    },
                 },
                 y: {
                     beginAtZero: true,
@@ -208,14 +210,14 @@ function createGraph (data) {
     });
 }
 
-/*fetch('https://canvasjs.com/services/data/datapoints.php')
+fetch('https://canvasjs.com/services/data/datapoints.php')
     .then(response => response.json())
     .then(data => {
         createGraph(data);
     })
     .catch(error => {
         console.error('Erreur lors de la récupération des données :', error);
-});*/
+});
 
 function updateGraph(thirdChart, newData) {
     thirdChart.data.labels = newData.map(point => point[0]);
@@ -234,4 +236,38 @@ setInterval(() => {
     .catch(error => {
         console.error('Erreur lors de la récupération des données :', error);
     });
-}, 1000);
+}, 1000);*/
+
+var myChartThird = new Chart(ctxThird, {
+    type: 'line',
+    data: {
+        labels: [],
+        datasets: [{
+            label: 'Data Points',
+            data: dataPoints,
+            fill: false,
+            borderColor: 'blue',
+            tension: 0.1
+        }]
+    },
+});
+
+function fetchData() {
+    var url = "https://canvasjs.com/services/data/datapoints.php?xstart=" + (dataPoints.length + 1) + "&ystart=" + (dataPoints[dataPoints.length - 1]) + "&length=1&type=json";
+
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            if (data.length > 0) {
+                dataPoints.push(data[0][1]);
+                myChartThird.data.labels.push(data[0][0]);
+                myChartThird.update();
+            }
+            console.log(dataPoints)
+        })
+        .catch(error => console.error("Error fetching data: " + error));
+
+    setTimeout(fetchData, 1000);
+}
+
+fetchData(); 
